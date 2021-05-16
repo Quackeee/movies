@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "290137006373",
+    "project_id": "movies-9735b",
+    "storage_bucket": "movies-9735b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:290137006373:android:caa4e4b5b94ffc4ba9bacc",
+        "android_client_info": {
+          "package_name": "edu.quacke.movies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "290137006373-bud93st62k1fjmuf9lueubgkm8d67n9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtp1IY48BnMbOyrgyx9U5QjUxiKzW-fR0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "290137006373-bud93st62k1fjmuf9lueubgkm8d67n9g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
