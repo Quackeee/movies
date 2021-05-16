@@ -21,32 +21,37 @@ class MovieList extends StatelessWidget {
         child: Text("Not logged in"),
       );
 
-    return 
-      Scaffold(
-        appBar: AppBar(
-          title: const Text("Movies"),
-          actions: [
-            IconButton(icon: Icon(Icons.logout), onPressed: () => context.read<AuthenticationService>().signOut())
-          ],
-        ),
-        body: StreamBuilder<QuerySnapshot>(
-            stream: user.movies.snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return const Center(child: Text("Loading..."));
-              return SingleChildScrollView(
-                  child: ListView(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    children: snapshot.data!.docs
-                        .map((doc) => Hero(child: MovieListItem(Movie.fromDocument(doc)), tag: doc.id))
-                        .toList(),
-                    shrinkWrap: true,
-                  ));
-            }),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AddEditMovieView())),
-        ),
-      );
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Movies"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () => context.read<AuthenticationService>().signOut())
+        ],
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: user.movies.snapshots(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return const Center(child: Text("Loading..."));
+            return SingleChildScrollView(
+                child: ListView(
+              padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+              children: snapshot.data!.docs
+                  .map((doc) => Hero(
+                      child: MovieListItem(Movie.fromDocument(doc)),
+                      tag: doc.id))
+                  .toList(),
+              shrinkWrap: true,
+            ));
+          }),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => Navigator.push(
+            context, MaterialPageRoute(builder: (_) => AddEditMovieView())),
+      ),
+    );
   }
 }
 
@@ -88,11 +93,11 @@ class MovieListItem extends StatelessWidget {
                 ],
               )
             ],
-        ),
+          ),
+          behavior: HitTestBehavior.translucent,
           onTap: () {
             MainScaffoldNavigation.instance.add(ShowMovieDetails(movie));
           },
-      )
-    );
+        ));
   }
 }

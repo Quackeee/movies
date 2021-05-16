@@ -22,84 +22,83 @@ class _SignInPageState extends State<SignInPage> {
     });
   }
 
+  final formKey = GlobalKey<FormState>(debugLabel: "loginForm");
 
   @override
   Widget build(BuildContext context) {
     final node = FocusScope.of(context);
 
-    final buttonText = newAccount? "Sign up": "Sign in";
-    final buttonPressed = newAccount?
-    () => context.read<AuthenticationService>().signUp(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim()):
-    () => context.read<AuthenticationService>().signIn(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim());
-    final noteText1 = newAccount? "Already have an account? ": "Don't have an account yet? ";
-    final noteText2 = newAccount? "Sign in!": "Sign up!";
+    final buttonText = newAccount ? "Sign up" : "Sign in";
+    final signInOrUp = newAccount
+        ? () => context.read<AuthenticationService>().signUp(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim())
+        : () => context.read<AuthenticationService>().signIn(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
+    final noteText1 = newAccount
+        ? "Already have an account? "
+        : "Don't have an account yet? ";
+    final noteText2 = newAccount ? "Sign in!" : "Sign up!";
 
-    return
-    Scaffold(
-      appBar: AppBar(
-        title: Text("Movies"),
-      ),
-      body:
-      Padding(
-          padding: EdgeInsets.all(50),
-          child: Form(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                      labelText: "Email"
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Movies"),
+        ),
+        body: Padding(
+            padding: EdgeInsets.all(50),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextFormField(
+                    controller: emailController,
+                    decoration: InputDecoration(labelText: "Email"),
+                    validator: (String? value) {
+                      if (value == null) return "Email is required";
+                      var email = value.toString();
+                      if (email.isEmpty) return "Email is required";
+                      if (!email.isEmail) return "Invalid email";
+                    },
+                    onEditingComplete: () => node.nextFocus(),
                   ),
-                  validator: (String? value) {
-                    if (value == null) return "Email is required";
-                    var email = value.toString();
-                    if (email.isEmpty) return "Email is required";
-                    if (!email.isEmail) return "Invalid email";
-                  },
-                  onEditingComplete: () => node.nextFocus(),
-                ),
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      labelText: "Password"
+                  TextFormField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: "Password"),
+                    validator: (String? value) {
+                      if (value == null || value.toString().trim().isEmpty)
+                        return "Password is required";
+                      if (value.trim().length < 6) return "Pasword too short";
+                    },
                   ),
-                  validator: (String? value) {
-                    if (value == null || value.toString().trim().isEmpty)
-                      return "Password is required";
-                  },
-                ),
-                ElevatedButton(
-                  onPressed: buttonPressed,
-                  child: Text(buttonText),
-                ),
-                RichText(
-                    text: TextSpan(
-                        children: [
-                          TextSpan(
-                              text: noteText1,
-                              style: Theme.of(context).textTheme.bodyText2
-                          ),
-                          TextSpan(
-                              text: noteText2,
-                              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                  color: Theme.of(context).colorScheme.secondary
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => _triggerNewAccount()
-                          )
-                        ]
-                    )
-                )
-              ],
-            ),
-          )
-      )
-    );
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        var error = await signInOrUp();
+                        if (error != null) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(error)));
+                        }
+                      }
+                    },
+                    child: Text(buttonText),
+                  ),
+                  RichText(
+                      text: TextSpan(children: [
+                    TextSpan(
+                        text: noteText1,
+                        style: Theme.of(context).textTheme.bodyText2),
+                    TextSpan(
+                        text: noteText2,
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => _triggerNewAccount())
+                  ]))
+                ],
+              ),
+            )));
   }
 }
